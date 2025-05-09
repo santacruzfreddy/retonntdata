@@ -1,0 +1,112 @@
+<mat-card class="cardWithShadow theme-card">
+    <mat-card-header class="d-flex justify-content-between align-items-center">
+        <mat-card-title class="text-start">Historia Clínica</mat-card-title>
+    </mat-card-header>
+
+    <mat-divider></mat-divider>
+
+    <mat-card-content>
+        <div class="row">
+            <div class="col-lg-12">
+                <mat-card class="b-1 shadow-none">
+                    <mat-card-header class="d-flex flex-column align-items-start">
+                        <!-- Input de cédula -->
+                        <div class="row w-100">
+                            <mat-form-field appearance="outline" class="w-100" color="primary">
+                                <mat-label>Ingrese el nombre del paciente</mat-label>
+                                <input matInput (input)="buscarPorNombre()" [matAutocomplete]="auto" [(ngModel)]="nombre" />
+                                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="seleccionarPersona($event)">
+                                    <mat-option *ngFor="let persona of personasFiltradas" [value]="persona">
+                                        {{ persona.firstName }} {{ persona.lastName }}
+                                    </mat-option>
+                                </mat-autocomplete>
+                            </mat-form-field>
+                        </div>
+
+                        <!-- Título -->
+                        <h4 class="text-center">Datos del paciente</h4>
+
+                        <!-- Contenedor de los datos del paciente -->
+                        <div *ngIf="paciente" class="row w-100 mt-3">
+                            <!-- Nombre y Fecha de Nacimiento (Derecha) -->
+                            <div class="col-md-6 text-end">
+                                <p><strong>Nombre:</strong> {{ paciente.firstName }} {{ paciente.lastName }}</p>
+                                <p><strong>Fecha de Nacimiento:</strong> {{ paciente.birthDate | date: 'dd/MM/yyyy'}}
+                                </p>
+                            </div>
+
+                            <!-- Edad y Ocupación (Izquierda) -->
+                            <div class="col-md-6">
+                                <p><strong>Edad:</strong> {{ calcularEdad(paciente.birthDate) }} años</p>
+                                <p><strong>Ocupación:</strong> {{ paciente.occupancy }}</p>
+                            </div>
+                        </div>
+
+                    </mat-card-header>
+
+                </mat-card>
+                <!-- Contenedor de antecedentes y diagnóstico en una fila -->
+                <div class="row">
+                    <!-- Antecedentes -->
+                    <div class="col-12 col-md-6">
+                        <mat-form-field appearance="outline" class="w-100 mb-3">
+                            <mat-label>Antecedentes</mat-label>
+                            <textarea matInput rows="3" placeholder="Antecedentes actuales" readonly="true"
+                                [readonly]="true">{{ antecedentes || 'No se encontraron antecedentes.' }}</textarea>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Diagnóstico -->
+                    <div class="col-12 col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Diagnóstico</mat-label>
+                            <textarea matInput rows="3" placeholder="Diagnóstico actual" readonly="true"
+                                [readonly]="true">{{ diagnosis || 'No se encontraron diagnósticos.' }}</textarea>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <mat-card-header class="d-flex justify-content-between align-items-center">
+                    <mat-card-title class="text-start">Todas las atenciones</mat-card-title>
+                </mat-card-header>
+                <mat-card-content class="b-t-1 mt-3" *ngFor="let attention of attentions">
+                    <div class="row">
+                        <!-- Columna izquierda con el acordeón de citas -->
+                        <div class="col-lg-12">
+                            <mat-accordion class="example-headers-align" multi>
+                                <mat-expansion-panel>
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title class="example-full-width col-sm-8">
+                                            <h4>Fecha de Atención:</h4>
+                                        </mat-panel-title>
+                                        <mat-panel-description class="col-md-2">
+                                            {{attention.dateAttention}}
+                                        </mat-panel-description>
+                                    </mat-expansion-panel-header>
+                                    <mat-divider></mat-divider>
+
+                                    <div>
+                                        <h4>Motivo de la consulta</h4>
+                                        <p>{{ attention.reason }} <!-- Razon actual --></p>
+                                    </div>
+                                    <mat-divider></mat-divider>
+                                    <div>
+                                        <h4>Estado actual:</h4>
+                                        <p>{{ attention.currentStatus }}</p>
+                                    </div>
+                                    <mat-divider></mat-divider>
+
+                                    <!-- Contenido del panel de expansión -->
+                                    <div>
+                                        <h4>Tarea de Intercesión:</h4>
+                                        <p>{{ attention.intersessionTask }}</p>
+                                    </div>
+                                </mat-expansion-panel>
+                            </mat-accordion>
+                        </div>
+                    </div>
+                </mat-card-content>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>
